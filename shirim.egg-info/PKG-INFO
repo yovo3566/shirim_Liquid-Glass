@@ -1,0 +1,21 @@
+Metadata-Version: 2.4
+Name: shirim
+Version: 1.4.3
+Summary: Shirim music app
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: yt-dlp
+Requires-Dist: requests
+Requires-Dist: ytmusicapi
+Requires-Dist: mutagen
+Requires-Dist: pywebview
+Requires-Dist: certifi
+Requires-Dist: websockets
+Requires-Dist: brotli
+Requires-Dist: curl-cffi
+Requires-Dist: urllib3
+Requires-Dist: qrcode
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: ruff; extra == "dev"

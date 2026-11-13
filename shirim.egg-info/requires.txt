@@ -1,0 +1,16 @@
+yt-dlp
+requests
+ytmusicapi
+mutagen
+pywebview
+certifi
+websockets
+brotli
+curl-cffi
+urllib3
+qrcode
+
+[dev]
+pytest
+black
+ruff
