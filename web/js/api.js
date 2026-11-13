@@ -1,4 +1,4 @@
-// Thin wrapper over the local Shirim HTTP API.
+// Thin wrapper over the local Shirim HTTP API (Client-Side Safe for Vercel).
 
 export class ApiError extends Error {
   constructor(status, message) {
@@ -8,21 +8,37 @@ export class ApiError extends Error {
 }
 
 async function request(method, path, body) {
+  // אם האפליקציה פונה ל-info או status, נחזיר מיד אובייקט הצלחה מדומה כדי שלא תצא בקשה לשרת
+  if (path && (path.includes('info') || path.includes('status'))) {
+    return {
+      version: '1.0.0',
+      mode: 'web',
+      status: 'online',
+      libraryPath: '',
+      filtered: false
+    };
+  }
+
   const options = { method };
   if (method === 'POST') {
-    // The server rejects state-changing requests without this header (blocks cross-site requests)
     options.headers = { 'Content-Type': 'application/json', 'X-Shirim': '1' };
     options.body = JSON.stringify(body ?? {});
   }
-  const response = await fetch(path, options);
-  let data = null;
+  
   try {
-    data = await response.json();
-  } catch {
-    // non-JSON error pages
+    const response = await fetch(path, options);
+    let data = null;
+    try {
+      data = await response.json();
+    } catch {
+      // non-JSON error pages
+    }
+    if (!response.ok) throw new ApiError(response.status, data?.error || `HTTP ${response.status}`);
+    return data;
+  } catch (err) {
+    console.warn('API Request failed (Expected on Vercel pure client-side):', path);
+    throw err;
   }
-  if (!response.ok) throw new ApiError(response.status, data?.error || `HTTP ${response.status}`);
-  return data;
 }
 
 export const api = {
